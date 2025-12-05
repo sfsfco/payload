@@ -74,7 +74,7 @@ export const FormBlock: React.FC<
             method: 'POST',
           })
 
-          const res = await req.json()
+          const res: { errors?: { message: string }[]; status: string } = await req.json()
 
           clearTimeout(loadingTimerID)
 

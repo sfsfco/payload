@@ -37,7 +37,11 @@ export const Country: React.FC<
         control={control}
         defaultValue=""
         name={name}
-        render={({ field: { onChange, value } }) => {
+        render={({
+          field: { onChange, value },
+        }: {
+          field: { onChange: (value: string) => void; value: string }
+        }) => {
           const controlledValue = countryOptions.find((t) => t.value === value)
 
           return (

@@ -10,6 +10,14 @@ import { r2Storage } from '@payloadcms/storage-r2'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Posts } from './collections/Posts'
+import { Categories } from './collections/Categories'
+import { Footer } from './Footer/config'
+import { Header } from './Header/config'
+import { plugins } from './plugins'
+import { defaultLexical } from './fields/defaultLexical'
+import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -28,9 +36,33 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    livePreview: {
+      breakpoints: [
+        {
+          label: 'Mobile',
+          name: 'mobile',
+          width: 375,
+          height: 667,
+        },
+        {
+          label: 'Tablet',
+          name: 'tablet',
+          width: 768,
+          height: 1024,
+        },
+        {
+          label: 'Desktop',
+          name: 'desktop',
+          width: 1440,
+          height: 900,
+        },
+      ],
+    },
   },
-  collections: [Users, Media],
-  editor: lexicalEditor(),
+  collections: [Pages, Posts, Media, Categories, Users],
+  editor: defaultLexical,
+  globals: [Header, Footer],
+  cors: [getServerSideURL()].filter(Boolean),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -39,6 +71,7 @@ export default buildConfig({
   db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
   // database-adapter-config-end
   plugins: [
+    ...plugins,
     // storage-adapter-placeholder
     r2Storage({
       bucket: cloudflare.env.R2,
